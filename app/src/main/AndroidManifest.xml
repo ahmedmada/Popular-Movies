@@ -20,6 +20,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".DetailActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName=".MainActivity"></activity>
+        <activity
+            android:name=".SettingActivity"
+            android:label="@string/title_activity_setting"
             android:parentActivityName=".MainActivity"></activity>
     </application>
 

@@ -2,14 +2,19 @@ package com.qader.ahmed.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -68,15 +73,18 @@ public class MainActivityFragment extends Fragment {
 
     public void firstStart() {
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+        String sortBy = sharedPreferences.getString("arrang", "popular");
 
-            Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
-                    .appendQueryParameter("api_key", "ef11fa4ee85a2ce3a4ec3bb228455eb4")
-                    .build();
+        String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/" + sortBy + "?";
+
+        Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                .appendQueryParameter("api_key", "ef11fa4ee85a2ce3a4ec3bb228455eb4")
+                .build();
 
 
-            new FetchMovieData(getActivity()).execute(builtUri.toString());
+        new FetchMovieData(getActivity()).execute(builtUri.toString());
 
     }
 
@@ -212,4 +220,20 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+       if (id == R.id.action_settings) {
+            Intent i = new Intent(getActivity(),SettingActivity.class);
+            startActivity(i);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }
