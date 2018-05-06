@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,17 +33,22 @@ import java.util.List;
 
 
 
+
 public class MainActivityFragment extends Fragment {
 
+//    Button testButton;
 
     List<MovieData> listData = new ArrayList<>();
 
     ListAdapter adapter;
 
     RecyclerView mrecycle;
-    ProgressBar progressBar;
 
     MovieData movieData = new MovieData();
+    MovieDatabase db;
+    int flag = 0;
+
+    MovieListener movieListener;
     public MainActivityFragment() {
     }
 
@@ -61,30 +66,35 @@ public class MainActivityFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.recycle_grid, container, false);
 
 
-        progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
+        db = new MovieDatabase(getActivity());
         mrecycle = (RecyclerView) rootView.findViewById(R.id.recycle);
         mrecycle.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         adapter = new ListAdapter();
-        mrecycle.setAdapter(adapter);
-
+       // mrecycle.setAdapter(adapter);
 
         return rootView;
     }
 
-    public void firstStart() {
+    public void firstStart(int flag) {
+        if (flag == 1) {
+            ArrayList list = db.getAllRecord();
+            listData = list;
+        }else if (flag == 0){
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortBy = sharedPreferences.getString("arrang", "popular");
 
-        String sortBy = sharedPreferences.getString("arrang", "popular");
+            String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/" + sortBy + "?";
 
-        String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/" + sortBy + "?";
-
-        Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
-                .appendQueryParameter("api_key", "ef11fa4ee85a2ce3a4ec3bb228455eb4")
-                .build();
+            Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+                    .appendQueryParameter("api_key", "ef11fa4ee85a2ce3a4ec3bb228455eb4")
+                    .build();
 
 
-        new FetchMovieData(getActivity()).execute(builtUri.toString());
+            //new FetchMovieData(getActivity()).execute("http://api.themoviedb.org/3/movie/popular?api_key=ef11fa4ee85a2ce3a4ec3bb228455eb4");
+            new FetchMovieData(getActivity()).execute(builtUri.toString());
+        }
+        mrecycle.setAdapter(adapter);
 
     }
 
@@ -92,10 +102,24 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+//        mrecycle.setAdapter(adapter);
 
-//        progressBar.setVisibility(View.VISIBLE);
-        firstStart();
-     }
+        firstStart(flag);
+
+//            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+//
+//            String sortBy = sharedPreferences.getString("arrang", "popular");
+//
+//                String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/" + sortBy + "?";
+//
+//                Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
+//                        .appendQueryParameter("api_key", "ef11fa4ee85a2ce3a4ec3bb228455eb4")
+//                        .build();
+//
+//
+//                //new FetchMovieData(getActivity()).execute("http://api.themoviedb.org/3/movie/popular?api_key=ef11fa4ee85a2ce3a4ec3bb228455eb4");
+//                new FetchMovieData(getActivity()).execute(builtUri.toString());
+        }
 
 
 
@@ -157,6 +181,7 @@ public class MainActivityFragment extends Fragment {
                 movieData.setPopularity(finalObject.getDouble("popularity"));
                 movieData.setVote_count(finalObject.getInt("vote_count"));
                 movieData.setVote_average(finalObject.getDouble("vote_average"));
+                movieData.setId(finalObject.getInt("id"));
 
                 listData.add(movieData);
             }
@@ -167,9 +192,6 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected void onPostExecute(ArrayList l) {
-
-//            progressBar.setVisibility(View.INVISIBLE);
-
             if (listData == null) {
                 return;
             }
@@ -195,10 +217,16 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent i = new Intent(getActivity(),DetailActivity.class);
-            i.putExtra("movie",  moviedata);
-            startActivity(i);
+//            Intent i = new Intent(getActivity(),Detail.class);
+//            i.putExtra("movie",moviedata);
+//            i.putExtra("flag",flag);
+//            startActivity(i);
+            movieListener.setSelectedFilm(moviedata,flag);
         }
+    }
+
+    public void setMovieListener(MovieListener movieListener){
+        this.movieListener = movieListener;
     }
 
     private class ListAdapter extends RecyclerView.Adapter<ImageHolder>{
@@ -229,9 +257,17 @@ public class MainActivityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-       if (id == R.id.action_settings) {
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.favourit) {
+
+            flag = 1;
+            firstStart(flag);
+            return true;
+        }else if (id == R.id.action_settings) {
             Intent i = new Intent(getActivity(),SettingActivity.class);
             startActivity(i);
+            flag = 0;
+//            Toast.makeText(getActivity(),"flag = "+flag,Toast.LENGTH_LONG).show();
             return true;
         }
         return super.onOptionsItemSelected(item);

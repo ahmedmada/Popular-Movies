@@ -6,9 +6,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
-/**
- * Created by master on 12/08/2016.
- */
+
 public class SettingActivity  extends PreferenceActivity
         implements Preference.OnPreferenceChangeListener{
 

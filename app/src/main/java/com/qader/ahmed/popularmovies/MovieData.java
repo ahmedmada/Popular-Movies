@@ -1,11 +1,10 @@
 package com.qader.ahmed.popularmovies;
 
-import android.os.Parcel;
-
 import java.io.Serializable;
 
 
-public class MovieData  implements Serializable {
+//Model class
+public class MovieData implements Serializable{
     private String poster_path;
     private String overview;
     private String release_date;
@@ -13,20 +12,14 @@ public class MovieData  implements Serializable {
     private double popularity;
     private int vote_count;
     private double vote_average;
+    private int id;
 
-    protected MovieData(Parcel in) {
-        poster_path = in.readString();
-        overview = in.readString();
-        release_date = in.readString();
-        title = in.readString();
-        popularity = in.readDouble();
-        vote_count = in.readInt();
-        vote_average = in.readDouble();
+    public int getId() {
+        return id;
     }
 
-
-    public MovieData() {
-
+    public void setId(int id) {
+        this.id = id;
     }
 
     public double getPopularity() {

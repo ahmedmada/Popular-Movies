@@ -1,22 +1,36 @@
 package com.qader.ahmed.popularmovies;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
-public class MainActivity extends AppCompatActivity {
+
+public class MainActivity extends AppCompatActivity implements MovieListener{
+
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.fragment2);
+        if (null == frameLayout){
+            mTwoPane = false;
+        }else {
+            mTwoPane = true;
+        }
 
-        MainActivityFragment fragment = new MainActivityFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment1,fragment).commit();
-
+        if (savedInstanceState == null){
+            MainActivityFragment fragment = new MainActivityFragment();
+            fragment.setMovieListener(this);
+            getSupportFragmentManager().beginTransaction().add(R.id.fragment1,fragment).commit();
+        }
     }
+
 
 
     @Override
@@ -28,9 +42,38 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            Intent i = new Intent(getBaseContext(),SettingActivity.class);
+//            startActivity(i);
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void setSelectedFilm(MovieData movieData,int flag) {
+
+        if (mTwoPane){
+            DetailFragment detailFragment = new DetailFragment();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("movie", movieData);
+            bundle.putInt("flag",flag);
+
+            detailFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment2,detailFragment,"details").commit();
+
+        }else {
+            Intent i = new Intent(this, Detail.class);
+            i.putExtra("movie", movieData);
+            i.putExtra("flag", flag);
+            startActivity(i);
+        }
+
+    }
 }
