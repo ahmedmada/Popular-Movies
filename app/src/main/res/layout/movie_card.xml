@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/card_elevation"
+        android:layout_margin="@dimen/card_margin"
+        app:cardCornerRadius="@dimen/card_radius"
+        android:layout_gravity="center"
+        >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <ImageView
+            android:id="@+id/activity_detail_movie_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/movie_image_height"
+            android:clickable="true"
+            android:scaleType="fitXY"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            />
+        <TextView
+            android:id="@+id/activity_detail_movie_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_detail_movie_image"
+            android:paddingLeft="@dimen/movie_title_padding"
+            android:paddingRight="@dimen/movie_title_padding"
+            android:paddingTop="@dimen/movie_title_padding"
+            android:textColor="@color/movie_title"
+            android:textSize="@dimen/movie_title"
+            android:maxLines="1"
+            />
+        <TextView
+            android:id="@+id/activity_main_movie_vote_average"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/activity_detail_movie_title"
+            android:paddingLeft="@dimen/movie_title_padding"
+            android:paddingRight="@dimen/movie_title_padding"
+            android:paddingBottom="@dimen/movie_rate_padding_bottom"
+            android:textSize="@dimen/movie_vote_average"
+            />
+    </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,12 +1,15 @@
-package com.qader.ahmed.popularmovies;
+package com.qader.ahmed.popularmovies.models;
 
 import java.io.Serializable;
 
 
-public class ReviewData implements Serializable {
 
-    private String author;
-    private String content;
+public class ReviewModel implements Serializable {
+
+    private String author,content;
+
+    public ReviewModel() {
+    }
 
     public String getAuthor() {
         return author;

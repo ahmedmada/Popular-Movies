@@ -1,10 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/activity_main_container"
+    tools:context=".MainActivity">
 
-    <FrameLayout  android:id="@+id/fragment1"
-        android:name="com.ahmed.android.movieapp.MainActivityFragment"
-        tools:layout="@layout/fragment_main" android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-</LinearLayout>
+
+    <GridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/Movie_gridview"
+            android:numColumns="2"
+    ></GridView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/empty_state_textview"
+        />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/moive_progressbar"
+        android:visibility="invisible"
+        />
+
+    </FrameLayout>
