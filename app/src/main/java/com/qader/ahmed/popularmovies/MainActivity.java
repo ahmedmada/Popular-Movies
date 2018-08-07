@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public static int scrollY = -1;
     public static int lastFirstVisiblePosition = 0;
 
+    boolean fav=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +75,42 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (fav){
+            Uri uri = Uri.parse("content://movieprovider/movies");
+            Cursor c = getContentResolver().query(uri,null,null,null,null);
+            ArrayList<MovieModel> movies = new ArrayList<MovieModel>();
+            MovieModel model;
+            while (c.moveToNext()){
+                model = new MovieModel();
+                model.setMovieId(c.getInt(0));
+                model.setMoviePostarPath(c.getString(1));
+                model.setMovieOverview(c.getString(2));
+                model.setMovieReleaseDate(c.getString(3));
+                model.setMovieTitle(c.getString(4));
+                Log.e("favorite list Title",c.getString(4));
+                model.setMovieVoteAverage(c.getString(5));
+                movies.add(model);
+            }
+            if (c.moveToFirst()){
+                movieProgressBar.setVisibility(View.GONE);
+                movieAdapter.clear();
+                movieAdapter.addAll(movies);
+                movieAdapter.notifyDataSetChanged();
+                movieGridView.setAdapter(movieAdapter);
+            }else{
+                movieProgressBar.setVisibility(View.GONE);
+                Toast.makeText(this, "There is no movies in favorite list", Toast.LENGTH_SHORT).show();
+                movieAdapter.clear();
+                movieAdapter.notifyDataSetChanged();
+            }
+        }
+        movieAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         // Save UI state changes to the savedInstanceState.
@@ -111,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
         }else
             emptyStateTextView.setText(R.string.no_internet);
         if (item.getItemId() == R.id.favorite){
+            fav=true;
             Uri uri = Uri.parse("content://movieprovider/movies");
             Cursor c = getContentResolver().query(uri,null,null,null,null);
             ArrayList<MovieModel> movies = new ArrayList<MovieModel>();
@@ -135,6 +173,8 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 movieProgressBar.setVisibility(View.GONE);
                 Toast.makeText(this, "There is no movies in favorite list", Toast.LENGTH_SHORT).show();
+                movieAdapter.clear();
+                movieAdapter.notifyDataSetChanged();
             }
         }
         return true;
