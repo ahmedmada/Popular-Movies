@@ -141,10 +141,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (CheckInternetConnection.isConnected(this)) {
-            if (item.getItemId() == R.id.popular_menu)
+            if (item.getItemId() == R.id.popular_menu){
                 new MovieAsyncTask().execute(BuildUrl.POPULAR_MOVIE_URL);
-            if (item.getItemId() == R.id.top_rated_menu)
+                fav=false;
+            }
+            if (item.getItemId() == R.id.top_rated_menu) {
                 new MovieAsyncTask().execute(BuildUrl.TOP_RATED_MOVIE_URL);
+                fav=false;
+            }
         }else
             emptyStateTextView.setText(R.string.no_internet);
         if (item.getItemId() == R.id.favorite){
